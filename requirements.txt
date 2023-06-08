@@ -1,0 +1,22 @@
+alembic==1.11.1
+click==8.1.3
+colorama==0.4.6
+# Editable Git install with no remote (eclipse-todo==0.1)
+-e c:\users\hp\full stack\projects\python\todo app
+greenlet==2.0.2
+Mako==1.2.4
+markdown-it-py==2.2.0
+MarkupSafe==2.1.3
+mdurl==0.1.2
+numpy==1.24.3
+pandas==2.0.2
+Pygments==2.15.1
+python-dateutil==2.8.2
+pytz==2023.3
+rich==13.4.1
+shellingham==1.5.0.post1
+six==1.16.0
+SQLAlchemy==2.0.15
+typer==0.9.0
+typing_extensions==4.6.3
+tzdata==2023.3

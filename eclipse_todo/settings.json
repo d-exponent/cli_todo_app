@@ -1,0 +1,10 @@
+{
+  "protocol": "fs",
+  "database": {
+    "name": "hhh",
+    "username": "hh",
+    "password": "jj",
+    "host": "jj",
+    "port": 0
+  }
+}
