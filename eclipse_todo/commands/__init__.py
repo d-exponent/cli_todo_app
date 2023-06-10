@@ -1,2 +1,2 @@
-from . import config, todo
+from . import settings_config, todo
 from .typer_app import app

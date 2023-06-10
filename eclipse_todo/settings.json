@@ -1,10 +1,9 @@
 {
-  "protocol": "fs",
+  "protocol": "db",
   "database": {
-    "name": "hhh",
-    "username": "hh",
-    "password": "jj",
-    "host": "jj",
-    "port": 0
+    "password": "password",
+    "port": 5432,
+    "name": "eclipse_todo_cli",
+    "user": "postgress"
   }
 }

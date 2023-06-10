@@ -1,6 +1,5 @@
-import typer
+from typer import Exit
 
 
-def check_exit_abort(input: str):
-    if 'exit' in input.lower():
-        raise typer.Abort()
+def exit(code: int = 0):
+    raise Exit(code)
