@@ -1,9 +1,10 @@
 {
   "protocol": "db",
   "database": {
+    "name": "eclipse_todo",
+    "user": "postgres",
     "password": "password",
-    "port": 5432,
-    "name": "eclipse_todo_cli",
-    "user": "postgress"
+    "host": "localhost",
+    "port": 5432
   }
 }

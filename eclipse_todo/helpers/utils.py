@@ -1,5 +1,8 @@
-def sum_objects(*args):
-    sum = 0
+def sum_true(*args):
+    total = 0
+    if args is None:
+        return total
+
     for arg in args:
-        sum += int(bool(arg))
-    return sum
+        total += int(bool(arg))
+    return total

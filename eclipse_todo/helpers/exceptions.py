@@ -1,5 +1,5 @@
 from typer import Exit
 
 
-def exit(code: int = 0):
+def exit_app(code: int = 0):
     raise Exit(code)

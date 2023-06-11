@@ -1,0 +1,10 @@
+{
+  "protocol": "db",
+  "database": {
+    "password": "password",
+    "port": 5432,
+    "name": "eclipse",
+    "user": "postgres",
+    "host": "localhost"
+  }
+}
