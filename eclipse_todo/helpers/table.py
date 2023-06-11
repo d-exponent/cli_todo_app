@@ -1,5 +1,5 @@
 from rich import table
-from eclipse_todo.wrappers import console
+from eclipse_todo.classes import console
 
 
 def draw_table(data: dict, msg: str = "") -> None:

@@ -1,6 +1,5 @@
 from psycopg2 import connect
 from .settings import get_settings
-from eclipse_todo.constants import SETTINGS_FILE
 
 
 def conn():

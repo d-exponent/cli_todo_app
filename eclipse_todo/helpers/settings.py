@@ -14,7 +14,7 @@ def get_settings() -> dict:
 
 
 def update_settings(new_settings: dict) -> None:
-    settings = get_settings().copy()
+    settings = get_settings()
     settings.update(new_settings)
     with open(SETTINGS_FILE, 'w') as f:
         f.write(json.dumps(settings, indent=2))
@@ -23,13 +23,12 @@ def update_settings(new_settings: dict) -> None:
 def reset_db_password():
     db_settings = get_settings()['database']
     db_settings['password'] = prompt("password: ", return_bool=False)
-    update_settings(db_settings)
+    update_settings({'database': db_settings})
 
 
-def set_database_credentials(settings_file: str = SETTINGS_FILE) -> dict:
+def set_database_credentials() -> dict:
     print("\nENTER YOUR DATABASE CREDENTIALS")
-    app_settings = get_settings()
-    db_settings = app_settings['database']
+    db_settings = {}
     db_settings['name'] = prompt("database name: ", return_bool=False, show_exit=True)
     db_settings['user'] = prompt("user: ", return_bool=False)
     db_settings['password'] = prompt("password: ", return_bool=False)
@@ -38,12 +37,12 @@ def set_database_credentials(settings_file: str = SETTINGS_FILE) -> dict:
     while True:
         try:
             port = prompt(
-                "port (Only numbers are allowed eg: 1234): ", return_bool=False
+                "port (Only numbers are allowed eg: 1234...): ", return_bool=False
             )
             db_settings['port'] = int(port)
             break
         except ValueError:
             pass
 
-    update_settings(app_settings)
+    update_settings({"database": db_settings})
     return db_settings

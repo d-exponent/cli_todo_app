@@ -1,7 +1,6 @@
-from eclipse_todo import commands
-
-
-print("Welcome to your TODO application. Press EXIT at any prompt to quit the app \n")
-
 if __name__ == '__main__':
-    commands.app()
+    from eclipse_todo.commands import app
+    from eclipse_todo.helpers.fs_todos import init_todos_file
+
+    init_todos_file()
+    app()

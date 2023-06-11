@@ -1,5 +1,5 @@
 from eclipse_todo.constants import YES_OPTIONS, NO_OPTIONS, YES_NO_EXIT_MSG
-from typer import Exit
+from eclipse_todo.helpers.exceptions import exit_app
 
 
 def prompt(msg: str, return_bool: bool = True, show_exit=False):
@@ -7,7 +7,7 @@ def prompt(msg: str, return_bool: bool = True, show_exit=False):
     user_input = input(msg).lower()
 
     if 'exit' in user_input:
-        raise Exit()
+        exit_app()
 
     if not return_bool:
         return user_input
