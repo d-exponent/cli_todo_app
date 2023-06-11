@@ -6,7 +6,7 @@ from eclipse_todo.helpers.settings import (
     set_database_credentials,
 )
 from eclipse_todo.helpers.table import draw_table
-from eclipse_todo.helpers.utils import sum_true
+from eclipse_todo.helpers.utils import sum_true, generate_save_loc_msg
 from eclipse_todo.helpers.exceptions import exit_app
 
 SAVE_SUCCESS = "Your settings is saved successfully."
@@ -55,5 +55,4 @@ def set_crud_proto(db: bool = False, fs: bool = False):
             update_settings(settings)
             draw_table(db_settings, 'Your Database configurations')
 
-    loc = 'file system' if fs else 'postgres database'
-    print(SAVE_SUCCESS + f" Application will save todos to your {loc}")
+    print(SAVE_SUCCESS + " " + generate_save_loc_msg('fs' if fs else 'db'))

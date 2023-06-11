@@ -3,6 +3,10 @@ from eclipse_todo.constants import SETTINGS_FILE
 from .prompt import prompt
 
 
+def get_current_protocol() -> str:
+    return get_settings()['protocol']
+
+
 def get_database_property(prop: str) -> str:
     db = get_settings()['database']
     return db.get(prop)
