@@ -1,1 +1,0 @@
-from eclipse_todo.commands.typer_app import app

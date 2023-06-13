@@ -1,13 +1,27 @@
-from rich import table
-from eclipse_todo.classes import console
+from rich.table import Table
+from eclipse_todo import constants as c
 
 
-def draw_table(data: dict, msg: str = "") -> None:
-    print(msg)
-    data_iter = data.items()
-    headers = (setting[0] for setting in data_iter)
-    row = (setting[1] for setting in data_iter)
+def create_set_columns(table_name: str, config: dict) -> Table:
+    accepted = ('todos', 'settings')
+    assert table_name in accepted, 'table can either be "todos" or "settings"'
 
-    console.init_table(table.Table(*headers))
-    console.add_table_row(row)
-    console.print_table()
+    table = Table(**config)
+    if table_name == 'todos':
+        table.add_column("Index", justify='left')
+        table.add_column("Todo", justify='left', style='cyan', no_wrap=False)
+        table.add_column("Due", justify="left", style="red")
+        table.add_column("Created_at", justify="left", style="green")
+
+    if table_name == 'settings':
+        table.add_column("Name")
+        table.add_column("User")
+        table.add_column("Password")
+        table.add_column("Host")
+        table.add_column("Port")
+
+    return table
+
+
+def handle_db_err_msg(primary_err):
+    print(f'\n{primary_err}\n{c.CONFIG_DB_COMMAND}.\nCurrent credentails Below\n')

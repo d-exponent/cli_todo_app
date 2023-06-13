@@ -1,6 +1,4 @@
-if __name__ == '__main__':
-    from eclipse_todo.commands import app
-    from eclipse_todo.helpers.fs_todos import init_todos_file
+from eclipse_todo.commands import app
 
-    init_todos_file()
+if __name__ == '__main__':
     app()

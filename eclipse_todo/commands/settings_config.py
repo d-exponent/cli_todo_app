@@ -1,13 +1,9 @@
 from .typer_app import app
+from eclipse_todo.classes.draw import draw
+from eclipse_todo.helpers import settings as s
 from eclipse_todo.constants import CONFIG_DB_COMMAND
-from eclipse_todo.helpers.settings import (
-    get_settings,
-    update_settings,
-    set_database_credentials,
-)
-from eclipse_todo.helpers.table import draw_table
-from eclipse_todo.helpers.utils import sum_true, generate_save_loc_msg
 from eclipse_todo.helpers.exceptions import exit_app
+from eclipse_todo.helpers.utils import sum_true, generate_save_loc_msg
 
 SAVE_SUCCESS = "Your settings is saved successfully."
 
@@ -17,9 +13,9 @@ def set_db_cred():
     """
     Sets the required postgres configurations and saves them in your local machine
     """
-    new_credentials = set_database_credentials()
+    s.set_database_credentials()
     print(SAVE_SUCCESS)
-    draw_table(new_credentials, "\nYour new database settings below")
+    draw.db_settings()
 
 
 # Allow the user to choose between postgres db or file system for todo operations
@@ -36,12 +32,12 @@ def set_crud_proto(db: bool = False, fs: bool = False):
         print(msg)
         exit_app(1)
 
-    settings = get_settings()
+    settings = s.get_settings()
     protocol = settings['protocol']
     if fs:
         if protocol != 'fs':
             settings['protocol'] = 'fs'
-            update_settings(settings)
+            s.update_settings(settings)
 
     if db:
         db_settings = settings['database']
@@ -52,7 +48,7 @@ def set_crud_proto(db: bool = False, fs: bool = False):
 
         if protocol != 'db':
             settings['protocol'] = 'db'
-            update_settings(settings)
-            draw_table(db_settings, 'Your Database configurations')
+            s.update_settings(settings)
+            draw.db_settings()
 
     print(SAVE_SUCCESS + " " + generate_save_loc_msg('fs' if fs else 'db'))

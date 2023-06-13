@@ -10,8 +10,3 @@ def conn(db_settings: dict = get_settings()['database']):
         host=db_settings.get('host'),
         port=db_settings.get('port'),
     )
-
-
-def close_connection(conn):
-    if conn is not None:
-        conn.close()

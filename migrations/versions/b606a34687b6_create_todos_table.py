@@ -27,7 +27,7 @@ def upgrade() -> None:
         CREATE TABLE todos (
             todo VARCHAR NOT NULL,
             due DATE,
-            created_by TIMESTAMP DEFAULT NOW()
+            created_at TIMESTAMP DEFAULT NOW()
         );
          """
     )
