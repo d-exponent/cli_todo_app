@@ -53,7 +53,7 @@ class Draw:
     def db_settings(self) -> None:
         config = {'title': "Database Settings", 'box': box.HORIZONTALS}
         table = create_set_columns('settings', config)
-        db_settings = get_settings()['database'] or None
+        db_settings = get_settings()['database']
 
         if not db_settings:
             print("\nYou currently have no set database credentials\n")

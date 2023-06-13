@@ -4,13 +4,14 @@ import pandas as pd
 from datetime import datetime
 from psycopg2 import OperationalError, DatabaseError
 
+
+from .typer_app import app
+from eclipse_todo import constants as c
 from eclipse_todo.helpers.db import conn
-from eclipse_todo.helpers.prompt import prompt
-from eclipse_todo.commands.typer_app import app
 from eclipse_todo.classes.draw import draw
+from eclipse_todo.helpers.prompt import prompt
 from eclipse_todo.helpers.exceptions import exit_app
 from eclipse_todo.helpers.settings import get_current_protocol
-from eclipse_todo import constants as c
 from eclipse_todo.helpers.utils import generate_save_loc_msg, validate_date_input
 
 

@@ -1,4 +1,4 @@
-from eclipse_todo.commands import app
+from eclipse_todo.commands import create, delete, settings_config, read, typer_app
 
 if __name__ == '__main__':
-    app()
+    typer_app.app()
