@@ -1,6 +1,15 @@
 from datetime import datetime
 
 
+def new_line():
+    print("\n")
+
+
+def new_line_then_print(msg: str = ""):
+    new_line()
+    print(msg)
+
+
 def sum_true(*args):
     total = 0
     if args is None:

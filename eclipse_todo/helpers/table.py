@@ -1,10 +1,11 @@
 from rich.table import Table
-from eclipse_todo import constants as c
+from eclipse_todo.helpers.utils import new_line_then_print, new_line
+from eclipse_todo.constants import CONFIG_DB_COMMAND
 
 
 def create_set_columns(table_name: str, config: dict) -> Table:
-    accepted = ('todos', 'settings')
-    assert table_name in accepted, 'table can either be "todos" or "settings"'
+    will_accept = ('todos', 'settings')
+    assert table_name in will_accept, 'table can either be "todos" or "settings"'
 
     table = Table(**config)
     if table_name == 'todos':
@@ -23,5 +24,8 @@ def create_set_columns(table_name: str, config: dict) -> Table:
     return table
 
 
-def handle_db_err_msg(primary_err):
-    print(f'\n{primary_err}\n{c.CONFIG_DB_COMMAND}.\nCurrent credentails Below\n')
+def handle_db_err_msg(error):
+    new_line_then_print(error)
+    new_line_then_print(CONFIG_DB_COMMAND)
+    new_line_then_print("Current credentails Below")
+    new_line()

@@ -3,7 +3,7 @@ from eclipse_todo.classes.draw import draw
 from eclipse_todo.helpers import settings as s
 from eclipse_todo.constants import CONFIG_DB_COMMAND
 from eclipse_todo.helpers.exceptions import exit_app
-from eclipse_todo.helpers.utils import sum_true, generate_save_loc_msg
+from eclipse_todo.helpers.utils import sum_true, generate_save_loc_msg, new_line
 
 SAVE_SUCCESS = "Your settings is saved successfully."
 
@@ -14,8 +14,10 @@ def set_db_cred():
     Sets the required postgres configurations and saves them in your local machine
     """
     s.set_database_credentials()
-    print(SAVE_SUCCESS)
+    new_line()
     draw.db_settings()
+    new_line()
+    print(SAVE_SUCCESS)
 
 
 # Allow the user to choose between postgres db or file system for todo operations

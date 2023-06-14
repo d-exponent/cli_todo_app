@@ -17,6 +17,11 @@ def get_settings() -> dict:
         return json.load(file)
 
 
+def make_settings_file(config: dict):
+    with open(SETTINGS_FILE, 'w') as f:
+        f.write(json.dumps(config, indent=2))
+
+
 def update_settings(new_settings: dict) -> None:
     settings = get_settings()
     settings.update(new_settings)

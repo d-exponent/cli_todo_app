@@ -1,4 +1,13 @@
-from eclipse_todo.commands import create, delete, settings_config, read, typer_app
+import os
+from eclipse_todo.constants import SETTINGS_FILE
+from eclipse_todo.helpers.settings import make_settings_file
+
+
+if not os.path.exists(SETTINGS_FILE):
+    make_settings_file({"protocol": "fs", "database": {}})
+
 
 if __name__ == '__main__':
-    typer_app.app()
+    from eclipse_todo.commands import app
+
+    app()

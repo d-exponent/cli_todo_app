@@ -1,9 +1,8 @@
 {
-  "protocol": "db",
+  "protocol": "fs",
   "database": {
     "name": "eclipse_todo_cli",
     "user": "postgres",
-    "password": "password",
     "host": "localhost",
     "port": 5432
   }

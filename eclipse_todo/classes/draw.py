@@ -5,6 +5,7 @@ from dataclasses import dataclass
 
 from eclipse_todo import constants as c
 from eclipse_todo.helpers.db import conn
+from eclipse_todo.helpers.utils import new_line_then_print, new_line
 from psycopg2 import OperationalError, DatabaseError
 from eclipse_todo.helpers.settings import get_settings
 from eclipse_todo.helpers.table import create_set_columns, handle_db_err_msg
@@ -23,7 +24,8 @@ class Draw:
                         table.add_row(*row)
                 self._console.print(table)
         except FileNotFoundError:
-            print("\nTodo list is currently empty.\n" + c.CREATE_TODO)
+            new_line_then_print("Todo list is currently empty.")
+            new_line_then_print(c.CREATE_TODO)
 
     def db_todos(self) -> None:
         table = create_set_columns('todos', {'title': "Database Todos"})
@@ -34,11 +36,14 @@ class Draw:
                     rows = cur.fetchall()
 
             if len(rows) == 0:
-                print("\nTodo list is currently empty.\n" + c.CREATE_TODO)
-            else:
-                for i, row in enumerate(rows):
-                    to_add = (str(i), row[0], str(row[1]), str(row[2]).split('.')[0])
-                    table.add_row(*to_add)
+                new_line_then_print("Todo list is currently empty.")
+                new_line_then_print(c.CREATE_TODO)
+                return
+
+            # We have rows here
+            for i, row in enumerate(rows):
+                to_add = (str(i), row[0], str(row[1]), str(row[2]).split('.')[0])
+                table.add_row(*to_add)
 
         except OperationalError:
             handle_db_err_msg(c.PG_OPERATIONAL_ERR)
@@ -56,19 +61,25 @@ class Draw:
         db_settings = get_settings()['database']
 
         if not db_settings:
-            print("\nYou currently have no set database credentials\n")
+            new_line_then_print("You currently have no set database credentials")
+            new_line()
             self._console.print(table)
-            print("\n" + c.CONFIG_DB_COMMAND + "\n")
+            new_line_then_print(c.CONFIG_DB_COMMAND)
+            new_line()
             return
 
-        table.add_row(
-            db_settings['name'],
-            db_settings['user'],
-            db_settings['password'],
-            db_settings['host'],
-            str(db_settings['port']),
-        )
-        self._console.print(table)
+        try:
+            table.add_row(
+                db_settings['name'],
+                db_settings['user'],
+                db_settings['password'],
+                db_settings['host'],
+                str(db_settings['port']),
+            )
+            self._console.print(table)
+        except KeyError as e:
+            print(f'🛑 KeyError: There is no {e} set in your database configuration')
+            new_line_then_print(c.CONFIG_DB_COMMAND)
 
 
 draw = Draw()
