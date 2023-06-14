@@ -2,22 +2,19 @@ import os
 import csv
 import pandas as pd
 from datetime import datetime
-from psycopg2 import OperationalError, DatabaseError
-
-
 from .typer_app import app
-from eclipse_todo import constants as c
-from eclipse_todo.helpers.db import conn
-from eclipse_todo.classes.draw import draw
+
+from eclipse_todo.constants import TODOS_FILE, YEAR_IN_1OO, YEAR_NOW
 from eclipse_todo.helpers.prompt import prompt
 from eclipse_todo.helpers.exceptions import exit_app
-from eclipse_todo.helpers.settings import get_current_protocol
+from eclipse_todo.helpers.database import add_db_todo
+from eclipse_todo.helpers.settings import get_settings
 from eclipse_todo.helpers.utils import generate_save_loc_msg, validate_date_input
 
 
 @app.command(help="create a new todo entry")
 def create():
-    now, protocol = (datetime.now(), get_current_protocol())
+    now, protocol = (datetime.now(), get_settings()['protocol'])
     msg = f"\nHey boss, your current save protocol is {protocol}. "
 
     print(msg + generate_save_loc_msg(protocol))
@@ -29,7 +26,7 @@ def create():
     if set_due_date:
         day_prompt = "Enter day [1 to 31]: "
         month_prompt = "Enter month [1 to 12]: "
-        year_prompt = f"Enter year: [{c.YEAR_NOW} to {c.YEAR_IN_1OO}]: "
+        year_prompt = f"Enter year: [{YEAR_NOW} to {YEAR_IN_1OO}]: "
 
         try:
             day = validate_date_input(prompt(day_prompt, False), day=True)
@@ -49,24 +46,11 @@ def create():
         )
 
     if protocol == 'db':
-        try:
-            with conn() as connection:
-                with connection.cursor() as cur:
-                    cur.execute(
-                        'INSERT INTO todos (todo, due) VALUES (%s, %s);',
-                        [content, due_date if set_due_date else None],
-                    )
-                    connection.commit()
-            draw.db_todos()
-        except OperationalError:
-            print(c.PG_OPERATIONAL_ERR)
-            exit_app(1)
-        except DatabaseError:
-            print(c.PG_DATABASE_ERR)
-            exit_app(1)
+        params = [content, due_date if set_due_date else None]
+        add_db_todo(params)
 
     if protocol == 'fs':
-        is_todos_exist = os.path.exists(c.TODOS_FILE)
+        is_todos_exist = os.path.exists(TODOS_FILE)
         new_todo = {
             'todo': [content],
             'due': [str(due_date.date()) if set_due_date else None],
@@ -75,16 +59,15 @@ def create():
 
         # Create the csv todos file if it doesn't exist
         if not is_todos_exist:
-            with open(c.TODOS_FILE, 'x'):
+            with open(TODOS_FILE, 'x'):
                 pass
 
         # Retrieve the csv file headers
-        with open(c.TODOS_FILE, 'r') as f:
+        with open(TODOS_FILE, 'r') as f:
             headers = next(csv.reader(f), None)
             has_headers = bool(headers)
 
         df = pd.DataFrame(new_todo)
-        df.to_csv(c.TODOS_FILE, mode='a', header=not has_headers, index=True)
-        draw.csv_todos()
+        df.to_csv(TODOS_FILE, mode='a', header=not has_headers, index=True)
 
     print("\n👍Todo was saved successfully")

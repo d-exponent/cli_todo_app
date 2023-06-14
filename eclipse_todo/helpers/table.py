@@ -1,6 +1,4 @@
 from rich.table import Table
-from eclipse_todo.helpers.utils import new_line_then_print, new_line
-from eclipse_todo.constants import CONFIG_DB_COMMAND
 
 
 def create_set_columns(table_name: str, config: dict) -> Table:
@@ -22,10 +20,3 @@ def create_set_columns(table_name: str, config: dict) -> Table:
         table.add_column("Port")
 
     return table
-
-
-def handle_db_err_msg(error):
-    new_line_then_print(error)
-    new_line_then_print(CONFIG_DB_COMMAND)
-    new_line_then_print("Current credentails Below")
-    new_line()

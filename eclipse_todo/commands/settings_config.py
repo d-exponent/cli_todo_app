@@ -1,11 +1,19 @@
 from .typer_app import app
-from eclipse_todo.classes.draw import draw
-from eclipse_todo.helpers import settings as s
+from eclipse_todo.helpers.draw import draw
 from eclipse_todo.constants import CONFIG_DB_COMMAND
 from eclipse_todo.helpers.exceptions import exit_app
-from eclipse_todo.helpers.utils import sum_true, generate_save_loc_msg, new_line
+from eclipse_todo.helpers import utils as u
+from eclipse_todo.helpers import settings as st
+
 
 SAVE_SUCCESS = "Your settings is saved successfully."
+
+
+@app.command(help="Reset your database password")
+def set_db_pass():
+    u.new_line()
+    st.reset_db_password()
+    u.new_line_then_print(SAVE_SUCCESS)
 
 
 @app.command(help="Set postgres database configuration")
@@ -13,44 +21,40 @@ def set_db_cred():
     """
     Sets the required postgres configurations and saves them in your local machine
     """
-    s.set_database_credentials()
-    new_line()
+    st.set_database_credentials()
+    u.new_line()
     draw.db_settings()
-    new_line()
-    print(SAVE_SUCCESS)
+    u.new_line_then_print(SAVE_SUCCESS)
 
 
 # Allow the user to choose between postgres db or file system for todo operations
 @app.command(help="Set preferred save protocol to preform CRUD on todos")
 def set_crud_proto(db: bool = False, fs: bool = False):
-    total_true = sum_true(db, fs)
+    total_true = u.sum_true(db, fs)
     if total_true == 0:
-        msg = '\nERROR: Provide either the --db or --fs flag'
-        print(msg)
+        u.new_line_then_print('ERROR: Provide either the --db or --fs flag')
         exit_app(1)
 
     if total_true == 2:
-        msg = '\nError: You can only provide one flag, either --fs or --db, not both'
-        print(msg)
+        u.new_line_then_print("Error: Provide one flag, either --fs or --db, not both")
         exit_app(1)
 
-    settings = s.get_settings()
+    settings = st.get_settings()
     protocol = settings['protocol']
     if fs:
         if protocol != 'fs':
             settings['protocol'] = 'fs'
-            s.update_settings(settings)
+            st.update_settings(settings)
 
     if db:
         db_settings = settings['database']
         if len(db_settings) != 5:
-            msg = "Database configuration is incomplete\n" + CONFIG_DB_COMMAND
-            print(msg)
+            print('Database configuration is incomplete')
+            u.new_line_then_print(CONFIG_DB_COMMAND)
             exit_app()
 
         if protocol != 'db':
             settings['protocol'] = 'db'
-            s.update_settings(settings)
-            draw.db_settings()
+            st.update_settings(settings)
 
-    print(SAVE_SUCCESS + " " + generate_save_loc_msg('fs' if fs else 'db'))
+    print(SAVE_SUCCESS + " " + u.generate_save_loc_msg('fs' if fs else 'db'))
