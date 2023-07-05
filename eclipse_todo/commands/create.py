@@ -8,18 +8,22 @@ from .typer_app import app
 from eclipse_todo.constants import TODOS, YEAR_IN_1OO, YEAR_NOW
 from eclipse_todo.helpers.prompt import prompt
 from eclipse_todo.helpers.exceptions import exit_app
-from eclipse_todo.helpers.database import add_db_todo
+from eclipse_todo.crud.db import Database
 from eclipse_todo.helpers.settings import get_settings
-from eclipse_todo.helpers.utils import generate_save_loc_msg, validate_date_input, new_line
+from eclipse_todo.helpers.utils import (
+    generate_save_loc_msg,
+    validate_date_input,
+    new_line,
+)
 from eclipse_todo.helpers.draw import draw
 
 
 @app.command(help="Create a new todo entry")
 def create(see: bool = Option(help='View todo items after save', default=False)):
-    now, protocol = (datetime.now(), get_settings()['protocol'])
-    msg = f"\nHey boss, your current save protocol is {protocol}. "
+    now, current_protocol = (datetime.now(), get_settings()['protocol'])
+    msg = f"\nHey boss, your current save protocol is {current_protocol}. "
 
-    print(msg + generate_save_loc_msg(protocol))
+    print(msg + generate_save_loc_msg(current_protocol))
     print("It's time for a new todo. So exciting😀!!\n")
 
     content = prompt("What do you want to do?: ", False, show_exit=True)
@@ -52,19 +56,18 @@ def create(see: bool = Option(help='View todo items after save', default=False))
     def see_draw():
         if see:
             new_line()
-            protocol == 'csv' and draw.csv_todos()
-            protocol == 'db' and draw.db_todos()
+            current_protocol == 'csv' and draw.csv_todos()
+            current_protocol == 'db' and draw.db_todos()
             new_line()
 
-    if protocol == 'db':
-        params = [content, due_date if set_due_date else None]
-        add_db_todo(params)
+    if current_protocol == 'db':
+        Database.create([content, due_date if set_due_date else None])
 
-    if protocol == 'csv':
+    if current_protocol == 'csv':
         is_todos_exist = os.path.exists(TODOS)
         new_todo = {
             'todo': [content],
-            'due': [str(due_date.date()) if set_due_date else None],
+            'due': [str(due_date.date()) if set_due_date else 'None'],
             'created_at': str(now).split('.')[0],
         }
 

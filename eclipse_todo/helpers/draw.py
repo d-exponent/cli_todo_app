@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 from eclipse_todo.constants import CREATE_TODO, CONFIG_DB_COMMAND, TODOS
 from eclipse_todo.helpers.utils import new_line_then_print, new_line
-from eclipse_todo.helpers.database import draw_db_todos
+from eclipse_todo.crud.db import Database
 from eclipse_todo.helpers.settings import get_settings
 from eclipse_todo.helpers.table import set_columns
 
@@ -29,19 +29,31 @@ class Draw:
             new_line_then_print(CREATE_TODO)
             new_line()
 
-    def db_todos(self) -> None:
+    def db_todos(
+        self, skip: int = 0, limit: int = 50, sort: int = 1, reader: Database = Database
+    ) -> None:
         table = set_columns('todos', {'title': "Database Todos"})
+
+        # Write tests for this funtion
+        rows = reader.read(sort, skip, limit)
+        if len(rows) == 0:
+            new_line_then_print("Todo list is currently empty.")
+            new_line_then_print(CREATE_TODO)
+        else:
+            for row in rows:
+                to_add = (str(row[0]), row[1], str(row[2]), str(row[3]).split('.')[0])
+                table.add_row(*to_add)
+
         new_line()
-        draw_db_todos(self, table)
+        self.console.print(table)
         new_line()
 
     def settings(self) -> None:
-        table_config = {
-            'title': "Database Settings.",
-            'box': box.HORIZONTALS,
-        }
+        table = set_columns(
+            'settings',
+            {'title': "Database Settings.", 'box': box.HORIZONTALS},
+        )
 
-        table = set_columns('settings', table_config)
         settings = get_settings()
         db_settings, protocol = [settings['database'], settings['protocol']]
         protocol_msg = f'Current Protocol => {protocol}'

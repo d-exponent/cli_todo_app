@@ -25,6 +25,7 @@ def upgrade() -> None:
     exec_raw_sql(
         """
         CREATE TABLE todos (
+            id SERIAL PRIMARY KEY,
             todo VARCHAR NOT NULL,
             due DATE,
             created_at TIMESTAMP DEFAULT NOW()

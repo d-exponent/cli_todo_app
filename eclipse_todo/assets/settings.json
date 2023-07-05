@@ -1,7 +1,7 @@
 {
   "protocol": "db",
   "database": {
-    "name": "eclipse_todo_cli",
+    "name": "todo_cli",
     "user": "postgres",
     "password": "password",
     "host": "localhost",
