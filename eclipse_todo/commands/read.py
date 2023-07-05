@@ -7,15 +7,22 @@ from eclipse_todo.helpers.utils import new_line
 
 
 @app.command(help="View your current todo items.")
-def read(
+def view_todos(
     db: bool = Option(help="View todo items in the database", default=False),
-    fs: bool = Option(help="View todo items in your local file system", default=False),
+    csv: bool = Option(help="View todo items in the csv file", default=False),
 ):
-    if sum_true(db, fs) != 1:
+    if sum_true(db, csv) != 1:
+        new_line()
         draw.db_todos()
         new_line()
         draw.csv_todos()
+        new_line()
         return
 
     db and draw.db_todos()
-    fs and draw.csv_todos()
+    csv and draw.csv_todos()
+
+
+@app.command(help='View the current settings')
+def view_settings():
+    draw.settings()

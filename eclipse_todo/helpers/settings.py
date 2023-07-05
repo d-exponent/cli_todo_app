@@ -1,6 +1,7 @@
 import json
 from eclipse_todo.constants import SETTINGS_FILE
 from .prompt import prompt
+from .utils import new_line_then_print
 
 
 def get_database_property(prop: str) -> str:
@@ -32,12 +33,14 @@ def reset_db_password():
 
 
 def set_database_credentials() -> dict:
-    print("\nENTER YOUR DATABASE CREDENTIALS")
-    db_settings = {}
-    db_settings['name'] = prompt("database name: ", False, show_exit=True)
-    db_settings['user'] = prompt("user: ", False)
-    db_settings['password'] = prompt("password: ", False)
-    db_settings['host'] = prompt("host: ", False)
+    new_line_then_print("\nEnter your database credentials")
+
+    db_settings = {
+        'name': prompt("database name: ", False, show_exit=True),
+        'user': prompt("user: ", False),
+        'password': prompt("password: ", False),
+        'host': prompt("host: ", False)
+    }
 
     while True:
         try:

@@ -17,9 +17,9 @@ PG_DATABASE_ERR = (
 )
 
 # FILES
-main_dir = path.join(getcwd(), 'eclipse_todo', 'data')
+main_dir = path.join(getcwd(), 'eclipse_todo', 'assets')
 SETTINGS_FILE = path.join(main_dir, "settings.json")
-TODOS_FILE = path.join(main_dir, 'todos.csv')
+TODOS = path.join(main_dir, 'todos.csv')
 
 
 # OPTIONS

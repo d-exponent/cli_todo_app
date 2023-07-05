@@ -1,19 +1,21 @@
 import os
 import csv
 import pandas as pd
+from typer import Option
 from datetime import datetime
 from .typer_app import app
 
-from eclipse_todo.constants import TODOS_FILE, YEAR_IN_1OO, YEAR_NOW
+from eclipse_todo.constants import TODOS, YEAR_IN_1OO, YEAR_NOW
 from eclipse_todo.helpers.prompt import prompt
 from eclipse_todo.helpers.exceptions import exit_app
 from eclipse_todo.helpers.database import add_db_todo
 from eclipse_todo.helpers.settings import get_settings
-from eclipse_todo.helpers.utils import generate_save_loc_msg, validate_date_input
+from eclipse_todo.helpers.utils import generate_save_loc_msg, validate_date_input, new_line
+from eclipse_todo.helpers.draw import draw
 
 
-@app.command(help="create a new todo entry")
-def create():
+@app.command(help="Create a new todo entry")
+def create(see: bool = Option(help='View todo items after save', default=False)):
     now, protocol = (datetime.now(), get_settings()['protocol'])
     msg = f"\nHey boss, your current save protocol is {protocol}. "
 
@@ -22,6 +24,8 @@ def create():
 
     content = prompt("What do you want to do?: ", False, show_exit=True)
     set_due_date = prompt("Do you want to set a due date [y/n]:  ", True)
+
+    due_date, year, month, day = [None for _ in range(4)]
 
     if set_due_date:
         day_prompt = "Enter day [1 to 31]: "
@@ -45,12 +49,19 @@ def create():
             day=day if day else now.day,
         )
 
+    def see_draw():
+        if see:
+            new_line()
+            protocol == 'csv' and draw.csv_todos()
+            protocol == 'db' and draw.db_todos()
+            new_line()
+
     if protocol == 'db':
         params = [content, due_date if set_due_date else None]
         add_db_todo(params)
 
-    if protocol == 'fs':
-        is_todos_exist = os.path.exists(TODOS_FILE)
+    if protocol == 'csv':
+        is_todos_exist = os.path.exists(TODOS)
         new_todo = {
             'todo': [content],
             'due': [str(due_date.date()) if set_due_date else None],
@@ -59,15 +70,18 @@ def create():
 
         # Create the csv todos file if it doesn't exist
         if not is_todos_exist:
-            with open(TODOS_FILE, 'x'):
+            with open(TODOS, 'x'):
                 pass
 
         # Retrieve the csv file headers
-        with open(TODOS_FILE, 'r') as f:
+        with open(TODOS, 'r') as f:
             headers = next(csv.reader(f), None)
             has_headers = bool(headers)
 
+        # Add the new todo
         df = pd.DataFrame(new_todo)
-        df.to_csv(TODOS_FILE, mode='a', header=not has_headers, index=True)
+        df.to_csv(TODOS, mode='a', header=not has_headers, index=True)
+
+    see_draw()
 
     print("\n👍Todo was saved successfully")

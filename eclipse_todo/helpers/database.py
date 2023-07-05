@@ -5,8 +5,10 @@ from eclipse_todo.helpers.settings import get_settings
 from eclipse_todo.helpers.utils import new_line_then_print
 from eclipse_todo.constants import PG_DATABASE_ERR, PG_OPERATIONAL_ERR, CREATE_TODO
 
+database_settings = get_settings()['database']
 
-def conn(db_settings: dict = get_settings()['database']):
+
+def conn(db_settings: dict = database_settings):
     return connect(
         database=db_settings.get('name'),
         user=db_settings.get('user'),

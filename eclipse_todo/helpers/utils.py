@@ -11,28 +11,24 @@ def new_line_then_print(msg: str = ""):
 
 
 def sum_true(*args):
-    total = 0
     if args is None:
-        return total
-
-    for arg in args:
-        total += int(bool(arg))
-    return total
+        return 0
+    return sum([int(bool(i)) for i in args])
 
 
 def generate_save_loc_msg(protocol):
-    loc = 'file system' if protocol == 'fs' else 'postgres database'
-    return f"The application will save todos to your {loc}."
+    loc = 'csv file' if protocol == 'csv' else 'postgres database'
+    return f"The application will save todos to the {loc}."
 
 
 def validate_date_input(
-    input: str, day: bool = False, month: bool = False, year: bool = False
+    entry: str, day: bool = False, month: bool = False, year: bool = False
 ):
     assert sum_true(day, month, year) == 1, 'Must provide only one flag'
-    if input == "":
-        return input
+    if entry == "":
+        return entry
 
-    input_int = int(input)
+    input_int = int(entry)
     if day and input_int not in range(1, 32):
         raise ValueError('A day must be between 1 to 31')
 
