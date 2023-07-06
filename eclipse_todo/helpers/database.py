@@ -19,13 +19,15 @@ def conn(db_settings: dict = database_settings):
 
 
 # DECORATOR TO HANDLE OPERATIONAL AND DATABASE ERRORS
-def exec_conn(conn_func: Callable):
+def guard_conn(func: Callable):
     def wrapper(*args, **kwargs):
         try:
-            return conn_func(*args, **kwargs)
+            return func(*args, **kwargs)
         except OperationalError:
             new_line_then_print(PG_OPERATIONAL_ERR)
+            return None
         except DatabaseError:
             new_line_then_print(PG_DATABASE_ERR)
+            return None
 
     return wrapper

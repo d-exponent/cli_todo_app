@@ -17,6 +17,7 @@ def set_db_pass():
     u.new_line()
     st.reset_db_password()
     u.new_line_then_print(SAVE_SUCCESS)
+    exit_app()
 
 
 @app.command(help="Set postgres database configuration")
@@ -28,10 +29,11 @@ def set_db_cred():
     u.new_line()
     draw.settings()
     print(SAVE_SUCCESS)
+    exit_app()
 
 
 # Allow the user to choose between postgres db or file system for todo operations
-@app.command(help="Set preferred save protocol to preform CRUD on todos")
+@app.command(help="Set preferred save protocol to preform CRUD on get")
 def set_protocol(db: bool = False, csv: bool = False):
     total_true = u.sum_true(db, csv)
     if total_true == 0:
@@ -52,7 +54,7 @@ def set_protocol(db: bool = False, csv: bool = False):
     if db:
         db_settings = settings['database']
         if len(db_settings) != 5:
-            print('Database configuration is incomplete')
+            print('Todos configuration is incomplete')
             u.new_line_then_print(CONFIG_DB_COMMAND)
             exit_app()
 
@@ -61,3 +63,4 @@ def set_protocol(db: bool = False, csv: bool = False):
             st.update_settings(settings)
 
     print(SAVE_SUCCESS + " " + u.generate_save_loc_msg('csv' if csv else 'db'))
+    exit_app()

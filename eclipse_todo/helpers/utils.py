@@ -18,7 +18,7 @@ def sum_true(*args):
 
 def generate_save_loc_msg(protocol):
     loc = 'csv file' if protocol == 'csv' else 'postgres database'
-    return f"The application will save todos to the {loc}."
+    return f"The application will save get to the {loc}."
 
 
 def validate_date_input(

@@ -24,8 +24,8 @@ def exec_raw_sql(query):
 def upgrade() -> None:
     exec_raw_sql(
         """
-        CREATE TABLE todos (
-            id SERIAL PRIMARY KEY,
+        CREATE TABLE get (
+            todo_id SERIAL PRIMARY KEY,
             todo VARCHAR NOT NULL,
             due DATE,
             created_at TIMESTAMP DEFAULT NOW()
@@ -35,4 +35,4 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    exec_raw_sql('DROP TABLE todos')
+    exec_raw_sql('DROP TABLE get')
