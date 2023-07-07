@@ -4,7 +4,7 @@ from datetime import datetime
 from eclipse_todo.constants import YEAR_IN_1OO, YEAR_NOW
 from eclipse_todo.helpers.prompt import prompt
 from eclipse_todo.helpers.exceptions import exit_app
-from eclipse_todo.crud.todos import Todos
+from eclipse_todo.crud.db import Todos
 from eclipse_todo.crud.csv import TodoEntry, CSV
 from eclipse_todo.helpers.utils import validate_date_input, new_line_then_print
 from eclipse_todo.helpers.draw import draw
@@ -17,15 +17,15 @@ SAVED_SUCCESS_MSG = 'The todo was saved successfully'
 
 def get_user_todo():
     new_line_then_print("It's time for a new todo. So exciting😀!!")
-    todo = prompt("What do you want to do?: ", False, show_exit=True)
-    set_due_date = prompt("Do you want to set a due date [y/n]:  ", True)
+    todo = prompt("New todo: ", False, show_exit=True)
+    set_due_date = prompt("Set a due date [y/n]:  ", True)
 
     due_date, year, month, day = [None for _ in range(4)]
 
     if set_due_date:
-        day_prompt = "Enter day [1 to 31]: "
-        month_prompt = "Enter month [1 to 12]: "
-        year_prompt = f"Enter year: [{YEAR_NOW} to {YEAR_IN_1OO}]: "
+        day_prompt = "Day [1 to 31]: "
+        month_prompt = "Month [1 to 12]: "
+        year_prompt = f"Year: [{YEAR_NOW} to {YEAR_IN_1OO}]: "
 
         try:
             day = validate_date_input(prompt(day_prompt, False), day=True)
@@ -59,7 +59,7 @@ def db(show_table: bool = Option(help=SHOW_TABLE_HELP, default=False)):
     exit_app()
 
 
-@app.command(help='Create a todos entry in your local machine')
+@app.command(help='Create a todos entry in the csv file')
 def csv(show_table: bool = Option(help=SHOW_TABLE_HELP, default=False)):
     CSV.create(new_todo=get_user_todo())
     new_line_then_print(SAVED_SUCCESS_MSG)

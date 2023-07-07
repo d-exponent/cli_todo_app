@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 from eclipse_todo.constants import CREATE_TODO, CONFIG_DB_COMMAND, TODOS
 from eclipse_todo.helpers.utils import new_line_then_print, new_line
-from eclipse_todo.crud.todos import Todos
+from eclipse_todo.crud.db import Todos
 from eclipse_todo.helpers.settings import get_settings
 from eclipse_todo.helpers.table import set_columns
 
@@ -23,7 +23,11 @@ class Draw:
         try:
             with open(TODOS, 'r') as data:
                 for i, row in enumerate(csv.reader(data)):
-                    if i != 0:  # avoid the headers
+                    if i == 0:  # avoid the headers
+                        # This will be adjusted in CSV crud class by -1 to correct ...
+                        # ... the index the user sees to the actual todo index
+                        continue
+                    else:
                         row.insert(0, str(i))
                         table.add_row(*row)
 

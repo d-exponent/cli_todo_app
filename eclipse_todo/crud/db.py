@@ -1,4 +1,3 @@
-from datetime import datetime
 from eclipse_todo.helpers.database import conn, guard_conn
 
 
@@ -36,32 +35,16 @@ class Todos:
 
     @classmethod
     @guard_conn
-    def update_by_id(cls, content: str, todo_id: int):
+    def update(cls, id: int, new_todo: str):
         with conn() as connection:
             with connection.cursor() as cur:
-                cur.execute('UPDATE todos SET todo=%s WHERE id=%s;', [content, todo_id])
+                cur.execute('UPDATE todos SET todo=%s WHERE id=%s;', [new_todo, id])
                 connection.commit()
 
     @classmethod
     @guard_conn
-    def delete_by_id(cls, todo_id: int):
+    def delete(cls, id: int):
         with conn() as connection:
             with connection.cursor() as cur:
-                cur.execute('DELETE FROM todos WHERE id=%s', [todo_id])
-                connection.commit()
-
-    @classmethod
-    @guard_conn
-    def delete_by_created_at(cls, created_at: datetime):
-        with conn() as connection:
-            with connection.cursor() as cur:
-                cur.execute('DELETE FROM todos WHERE created_at=%s', [created_at])
-                connection.commit()
-
-    @classmethod
-    @guard_conn
-    def delete_by_due(cls, due: datetime):
-        with conn() as connection:
-            with connection.cursor() as cur:
-                cur.execute('DELETE FROM todos WHERE due=%s', [due])
+                cur.execute('DELETE FROM todos WHERE id=%s', [id])
                 connection.commit()

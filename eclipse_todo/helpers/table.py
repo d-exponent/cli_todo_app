@@ -8,7 +8,7 @@ def set_columns(table_name: str, config: dict) -> Table:
     table = Table(**config)
 
     if table_name == 'todos':
-        table.add_column("No.")
+        table.add_column("Id")
         table.add_column("Todos", style='cyan', no_wrap=False)
         table.add_column("Due", style="red")
         table.add_column("Created_at", justify="left", style="green")
