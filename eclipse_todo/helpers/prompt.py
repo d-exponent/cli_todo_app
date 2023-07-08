@@ -1,5 +1,7 @@
-from eclipse_todo.constants import YES_OPTIONS, NO_OPTIONS, YES_NO_EXIT_MSG
-from eclipse_todo.helpers.exceptions import exit_app
+from eclipse_todo.helpers.exit import exit_app
+
+YES_NO_EXIT_MSG = "Please enter y for YES, n for NO or EXIT to exit the prompt"
+YES_OPTIONS = ('y', 'yes')
 
 
 def prompt(msg: str, return_bool: bool = True, show_exit=False):
@@ -13,7 +15,7 @@ def prompt(msg: str, return_bool: bool = True, show_exit=False):
         return user_input
 
     # return_bool argument is True here
-    if user_input not in NO_OPTIONS and user_input not in YES_OPTIONS:
+    if user_input not in ('n', 'no') and user_input not in ('y', 'yes'):
         print('\n' + YES_NO_EXIT_MSG)
         return prompt(msg, True, show_exit=False)
 

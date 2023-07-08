@@ -1,22 +1,39 @@
-from typer import Option, Typer
 from datetime import datetime
 
 from eclipse_todo.constants import YEAR_IN_1OO, YEAR_NOW
 from eclipse_todo.helpers.prompt import prompt
-from eclipse_todo.helpers.exceptions import exit_app
-from eclipse_todo.crud.db import Todos
-from eclipse_todo.crud.csv import TodoEntry, CSV
-from eclipse_todo.helpers.utils import validate_date_input, new_line_then_print
-from eclipse_todo.helpers.draw import draw
+from eclipse_todo.helpers.exit import exit_app
+from eclipse_todo.crud.csv import TodoEntry
+from eclipse_todo.helpers.utils import sum_true
 
 
 NOW = datetime.now()
-SHOW_TABLE_HELP = 'View table after new todo entry'
-SAVED_SUCCESS_MSG = 'The todo was saved successfully'
+
+
+def validate_date_input(
+    entry: str, day: bool = False, month: bool = False, year: bool = False
+):
+    assert sum_true(day, month, year) == 1, 'Must provide only one flag'
+    if entry == "":
+        return entry
+
+    input_int = int(entry)
+    if day and input_int not in range(1, 32):
+        raise ValueError('A day must be between 1 to 31')
+
+    if month and input_int not in range(1, 13):
+        raise ValueError("A month must be between 1 and 12")
+
+    year_now = datetime.now().year
+    year_in_100 = year_now + 100
+    if year and input_int not in range(year_now, year_in_100):
+        msg = f"A year must be between {year_now} and {year_in_100}"
+        raise ValueError(msg)
+
+    return input_int
 
 
 def get_user_todo():
-    new_line_then_print("It's time for a new todo. So exciting😀!!")
     todo = prompt("New todo: ", False, show_exit=True)
     set_due_date = prompt("Set a due date [y/n]:  ", True)
 
@@ -45,23 +62,3 @@ def get_user_todo():
         )
 
     return TodoEntry(todo, due_date)
-
-
-app = Typer(help='Create a new todo entry in your local machine or postgres instance')
-
-
-@app.command(help='Create a todo entry in your database table')
-def db(show_table: bool = Option(help=SHOW_TABLE_HELP, default=False)):
-    new_todo = get_user_todo()
-    Todos.create([new_todo.todo, new_todo.due])
-    new_line_then_print(SAVED_SUCCESS_MSG)
-    show_table and draw.db_todos(sort=-1)
-    exit_app()
-
-
-@app.command(help='Create a todos entry in the csv file')
-def csv(show_table: bool = Option(help=SHOW_TABLE_HELP, default=False)):
-    CSV.create(new_todo=get_user_todo())
-    new_line_then_print(SAVED_SUCCESS_MSG)
-    show_table and draw.csv_todos()
-    exit_app()

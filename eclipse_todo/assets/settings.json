@@ -1,10 +1,8 @@
 {
-  "protocol": "db",
-  "database": {
-    "name": "todo_cli",
-    "user": "postgres",
-    "password": "password",
-    "host": "localhost",
-    "port": 5432
-  }
+  "database": "test",
+  "user": "root",
+  "password": "password",
+  "host": "localhost",
+  "table": "hmm",
+  "type": "mysql"
 }

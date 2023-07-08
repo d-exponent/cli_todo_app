@@ -2,8 +2,7 @@ from typer import Option, Typer
 
 from eclipse_todo.helpers.prompt import prompt
 from eclipse_todo.helpers.draw import draw
-from eclipse_todo.helpers.exceptions import exit_app
-from eclipse_todo.crud.db import Todos
+from eclipse_todo.crud.database import Todos
 
 db_todos_help_msgs = {
     'recent': 'View from the most recently added todos',
@@ -45,10 +44,8 @@ def db(
 @app.command(help="View todos saved your local machine csv file.")
 def csv():
     draw.csv_todos()  # TODO: Paginate csv
-    exit_app()
 
 
 @app.command(help='View the current application settings')
 def settings():
     draw.settings()
-    exit_app()

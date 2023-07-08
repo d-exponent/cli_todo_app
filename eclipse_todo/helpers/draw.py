@@ -1,42 +1,64 @@
 import csv
 from rich import box
+from rich.table import Table
 from rich.console import Console
 from dataclasses import dataclass
 
 from eclipse_todo.constants import CREATE_TODO, CONFIG_DB_COMMAND, TODOS
 from eclipse_todo.helpers.utils import new_line_then_print, new_line
-from eclipse_todo.crud.db import Todos
+from eclipse_todo.crud.database import Todos
 from eclipse_todo.helpers.settings import get_settings
-from eclipse_todo.helpers.table import set_columns
+from eclipse_todo.helpers.decorators import key_error_handler, file_not_found_handler
 
 
 TODOS_TABLE = 'todos'
 SETTINGS_TABLE = 'settings'
 
 
+# UTILITY FUNTION
+def set_columns(table_name: str, config: dict) -> Table:
+    allowed = ('todos', 'settings')
+    assert table_name in allowed, 'table can either be "todos" or "settings"'
+
+    table = Table(**config)
+
+    if table_name == 'todos':
+        table.add_column("Id")
+        table.add_column("Todos", style='cyan', no_wrap=False)
+        table.add_column("Due", style="red")
+        table.add_column("Created_at", justify="left", style="green")
+
+    if table_name == 'settings':
+        table.add_column('Type')
+        table.add_column("Name")
+        table.add_column("User")
+        table.add_column("Password")
+        table.add_column("Host")
+        table.add_column("Port")
+
+    return table
+
+
 @dataclass
 class Draw:
     console: Console = Console()
 
+    @file_not_found_handler
     def csv_todos(self) -> None:
         table = set_columns(TODOS_TABLE, {'title': "CSV Todos"})
-        try:
-            with open(TODOS, 'r') as data:
-                for i, row in enumerate(csv.reader(data)):
-                    if i == 0:  # avoid the headers
-                        # This will be adjusted in CSV crud class by -1 to correct ...
-                        # ... the index the user sees to the actual todo index
-                        continue
-                    else:
-                        row.insert(0, str(i))
-                        table.add_row(*row)
 
-                new_line()
-                self.console.print(table)
-                new_line()
-        except FileNotFoundError:
-            new_line_then_print("Csv get is currently empty.")
-            new_line_then_print(CREATE_TODO)
+        with open(TODOS, 'r') as data:
+            for i, row in enumerate(csv.reader(data)):
+                if i == 0:  # avoid the headers
+                    # This will be adjusted in CSV crud class by -1 to correct ...
+                    # ... the index the user sees to the actual todo index
+                    continue
+                else:
+                    row.insert(0, str(i))
+                    table.add_row(*row)
+
+            new_line()
+            self.console.print(table)
             new_line()
 
     def db_todos(
@@ -62,35 +84,27 @@ class Draw:
         self.console.print(table)
         new_line()
 
+    @key_error_handler
+    @file_not_found_handler
     def settings(self) -> None:
         table = set_columns(
             SETTINGS_TABLE,
-            {'title': "Postgres Connection Settings.", 'box': box.HORIZONTALS},
+            {'title': "Database Settings", 'box': box.HORIZONTALS},
         )
 
         settings = get_settings()
-        db_settings, protocol = [settings['database'], settings['protocol']]
-        protocol_msg = f'Current Protocol => {protocol}'
+        db_type = settings['type']
 
-        def draw_settings():
-            new_line_then_print(protocol_msg)
-            new_line()
-            self.console.print(table)
-            new_line()
+        table.add_row(
+            db_type,
+            settings.get('database'),
+            settings.get('user'),
+            settings.get('password'),
+            settings.get('host'),
+            str(settings.get('port')) if db_type == 'postgres' else 'None',
+        )
 
-        if not settings['database']:
-            draw_settings()
-            print("You currently have no database settings")
-        else:
-            table.add_row(
-                db_settings.get('name'),
-                db_settings.get('user'),
-                db_settings.get('password'),
-                db_settings.get('host'),
-                str(db_settings.get('port')),
-            )
-            draw_settings()
-
+        self.console.print(table)
         print(CONFIG_DB_COMMAND)
         new_line()
 
